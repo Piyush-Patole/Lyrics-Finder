@@ -1,23 +1,30 @@
-import logo from './logo.svg';
-import './App.css';
+import "./App.css";
+import Axios from "axios";
+import { useState } from "react";
 
 function App() {
-  return (
+  const [artist, setArtist] = useState("");
+  const [song, setSong] = useState("");
+  const [lyrics, setLyrics] = useState("");
+
+  function searchLyrics() {
+    if (artist === "" || song === "") {
+      return;
+    }
+    Axios.get(`https://api.lyrics.ovh/v1/${artist}/${song}`).then((res) => {
+      console.log(res.data.lyrics);
+      setLyrics(res.data.lyrics);
+    })
+  }
+
+  return(
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <h1>What are the Lyrics ???</h1>
+      <input className="inp" type="text" placeholder="Artist" onChange={(e) => {setArtist(e.target.value)}} />
+      <input className="inp" type="text" placeholder="Song" onChange={(e) => {setSong(e.target.value)}}/>
+      <button className="btn" onClick={() => searchLyrics}> Find Lyrics </button>
+      <hr />
+      <pre>{lyrics}</pre>
     </div>
   );
 }
